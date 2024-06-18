@@ -19,6 +19,7 @@ public class UserServices {
 
     @Autowired
     private RestTemplate restTemplate;
+
     @Autowired
     private UserRepository repository;
 
