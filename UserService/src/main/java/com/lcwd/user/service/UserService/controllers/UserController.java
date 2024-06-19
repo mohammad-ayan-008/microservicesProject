@@ -30,6 +30,7 @@ public class UserController {
         if (user != null) return new ResponseEntity<>(user,HttpStatus.OK);
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
+
     @GetMapping
     public ResponseEntity<List<User>> getAll(){
         System.out.println("called2");

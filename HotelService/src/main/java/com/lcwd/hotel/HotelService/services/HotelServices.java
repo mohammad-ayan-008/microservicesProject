@@ -12,7 +12,6 @@ import java.util.Optional;
 public class HotelServices {
     @Autowired
     private HotelRepository hotelRepository;
-
     public Hotel create(Hotel hotel){
         return hotelRepository.save(hotel);
     }
@@ -20,7 +19,8 @@ public class HotelServices {
     public List<Hotel> getAll(){
         return hotelRepository.findAll();
     }
-    public Optional<Hotel> findById(ObjectId id){
-        return hotelRepository.findById(id);
+
+    public Optional<Hotel> findByIdHotelID(String id){
+        return Optional.ofNullable(hotelRepository.findByHotelId(id));
     }
 }

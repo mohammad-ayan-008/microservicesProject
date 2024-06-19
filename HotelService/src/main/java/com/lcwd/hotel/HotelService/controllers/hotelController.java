@@ -21,13 +21,15 @@ public class hotelController {
     public ResponseEntity<List<Hotel>> getAll(){
         return new ResponseEntity<>(hotelServices.getAll(), HttpStatus.OK);
     }
+
     @PostMapping
     public ResponseEntity<Hotel> create(@RequestBody Hotel hotel){
         return  new ResponseEntity<>(hotelServices.create(hotel),HttpStatus.CREATED);
     }
+
     @GetMapping("/{id}")
-    public ResponseEntity<Hotel> fetch(@PathVariable ObjectId id){
-        Optional<Hotel> byId = hotelServices.findById(id);
+    public ResponseEntity<Hotel> fetch(@PathVariable String id){
+        Optional<Hotel> byId = hotelServices.findByIdHotelID(id);
         if (byId.isPresent()) return new ResponseEntity<>(byId.get(),HttpStatus.OK);
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
