@@ -3,8 +3,6 @@ package com.lcwd.user.service.UserService.services;
 import com.lcwd.user.service.UserService.entities.Hotel;
 import com.lcwd.user.service.UserService.entities.Rating;
 import com.lcwd.user.service.UserService.entities.User;
-import com.lcwd.user.service.UserService.externals.HotelServices;
-import com.lcwd.user.service.UserService.externals.RatingService;
 import com.lcwd.user.service.UserService.repository.UserRepository;
 import org.bson.types.ObjectId;
 import org.slf4j.Logger;
@@ -14,25 +12,20 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
 @Service
-public class UserServices {
+public class UserServices2 {
 
-    @Autowired
-    private HotelServices hotelServices;
-    @Autowired
-    private RatingService ratingService;
     @Autowired
     private RestTemplate restTemplate;
 
     @Autowired
     private UserRepository repository;
 
-    private Logger logger = LoggerFactory.getLogger(UserServices.class);
+    private Logger logger = LoggerFactory.getLogger(UserServices2.class);
     public void saveUser(User user){
         repository.save(user);
     }
@@ -42,18 +35,17 @@ public class UserServices {
     }
 
     public User getUser(ObjectId id){
-        //Rating[] raatings= restTemplate.getForObject("http://RATINGSERVICE/rating/users/"+id, Rating[].class);
-        Rating[] raatings= ratingService.getRating(id);
+        Rating[] raatings= restTemplate.getForObject("http://RATINGSERVICE/rating/users/"+id, Rating[].class);
         logger.info("",raatings);
         Optional<User> byId = repository.findById(id);
         if (byId.isPresent()) {
             User user = byId.get();
             Arrays.stream(raatings).map(rating -> {
                 //Api call to hotel Service to get Hotel
-//                ResponseEntity<Hotel> forEntity = restTemplate.getForEntity("http://HOTELSERVICE/hotel/"+rating.getHotelId(), Hotel.class);
-//                Hotel hotel= forEntity.getBody();
-                  Hotel  hotel = hotelServices.getHotel(rating.getHotelId());
-                  rating.setHotel(hotel);
+                ResponseEntity<Hotel> forEntity = restTemplate.getForEntity("http://HOTELSERVICE/hotel/"+rating.getHotelId(), Hotel.class);
+                Hotel hotel= forEntity.getBody();
+                // set Hotel to rating
+                rating.setHotel(forEntity.getBody());
                 return rating;
             }).toList();
             user.setRatings(Arrays.asList(raatings));
